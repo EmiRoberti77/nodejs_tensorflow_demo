@@ -8,6 +8,23 @@
   <body>
     <script type="text/javascript">
       async function run() {
+        async function plot(pointsArray, featureName) {
+          tfvis.render.scatterplot(
+            {
+              name: `${featureName} vs House Price`,
+              tab: 'emi',
+            },
+            {
+              values: [pointsArray],
+              series: ['original'],
+            },
+            {
+              xLabel: featureName,
+              yLabel: 'Price',
+            }
+          );
+        }
+
         const houseSalesDataSet = tf.data.csv(
           'http://127.0.0.1:8080/kc_house_data.csv'
         );
@@ -19,7 +36,20 @@
           x: record.sqft_living,
           y: record.price,
         }));
-        console.log(await points.toArray());
+
+        plot(await points.toArray(), 'Square feet');
+
+        const featureValues = await points.map((p) => p.x).toArray();
+        const featuresTensor = tf.tensor2d(featureValues, [
+          featureValues.length,
+          1,
+        ]);
+
+        const labelValues = await points.map((p) => p.y).toArray();
+        const labelTensor = tf.tensor2d(labelValues, [labelValues.length, 1]);
+
+        featuresTensor.print();
+        labelTensor.print();
       }
 
       run();
