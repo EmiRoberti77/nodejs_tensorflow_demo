@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Liner regression</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      async function run() {
+        const houseSalesDataSet = tf.data.csv(
+          'http://127.0.0.1:8080/kc_house_data.csv'
+        );
+        const sampleDateSet = houseSalesDataSet.take(10);
+        const dataArray = await sampleDateSet.toArray();
+        console.log(dataArray);
+
+        const points = houseSalesDataSet.map((record) => ({
+          x: record.sqft_living,
+          y: record.price,
+        }));
+        console.log(await points.toArray());
+      }
+
+      run();
+    </script>
+  </body>
+</html>
